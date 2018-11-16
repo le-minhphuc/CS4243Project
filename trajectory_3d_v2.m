@@ -107,8 +107,18 @@ for i = 1 : clips_num
     X = output(1:valid_frame_count,2);
     Y = output(1:valid_frame_count,3);
     Z = output(1:valid_frame_count,4);
+    
+    windowSize = 6;
+    smoothX = zeros(valid_frame_count - windowSize,1);
+    smoothY = zeros(valid_frame_count - windowSize,1);
+    smoothZ = zeros(valid_frame_count - windowSize,1);
+    for valid_frame = windowSize + 1 : valid_frame_count
+        smoothX(valid_frame - windowSize,1) = mean(X(valid_frame - windowSize : valid_frame,1));
+        smoothY(valid_frame - windowSize,1) = mean(Y(valid_frame - windowSize : valid_frame,1));
+        smoothZ(valid_frame - windowSize,1) = mean(Z(valid_frame - windowSize : valid_frame,1));
+    end
     figure
-    scatter3(X,Y,Z,'filled');
+    plot3(smoothX,smoothY,smoothZ,'o-')
     
     % write trajectory to output csv file
     % csvwrite(output_fname,output);
