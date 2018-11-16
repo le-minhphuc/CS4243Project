@@ -64,6 +64,11 @@ for i = 1 : clips_num
     [m,n,p] = size(cam);
     
     output_fname = strcat(folder_name,'/output3d.csv');
+    fname = folder_info(j).name; % get the name of the last video file
+    fname_length = length(fname); % get the length of the name of the last video file
+    % take the name of the video, except the '.csv' part, as the name of
+    % the trajectory picture file
+    figname = strcat(folder_name,'/trajectory_scene_distorted_',extractBefore(fname,fname_length-4),'.jpg');
     
     clear output;
     valid_frame_count = 0;
@@ -73,8 +78,8 @@ for i = 1 : clips_num
         u_fp_mat = zeros(3,1);
         v_fp_mat = zeros(3,1);
         for cam_idx = 1 : 3
-            u_fp = cam(frm,3,cam_idx);
-            v_fp = cam(frm,4,cam_idx);
+            u_fp = cam(frm,1,cam_idx);
+            v_fp = cam(frm,2,cam_idx);
             
             if isnan(u_fp) || u_fp == 0
                 flag = 1;
@@ -125,8 +130,16 @@ for i = 1 : clips_num
         smoothY(valid_frame - windowSize,1) = mean(Y(valid_frame - windowSize : valid_frame,1));
         smoothZ(valid_frame - windowSize,1) = mean(Z(valid_frame - windowSize : valid_frame,1));
     end
-    figure
-    plot3(smoothX,smoothY,smoothZ,'o-')
+    
+    hFig = figure;
+    plot3(smoothX,smoothY,smoothZ,'o-');
+    xlabel('X');
+    ylabel('Y');
+    zlabel('Z');
+    
+    % Save trajectory into a .jpeg file in the same folder as the data .csv
+    % file
+    print(hFig, '-djpeg', figname);
     
     %csvwrite(output_fname,output);
 end

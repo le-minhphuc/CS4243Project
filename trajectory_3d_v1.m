@@ -1,3 +1,6 @@
+% Construct trajectory of table tennis ball from UNDISTORTED tracking data.
+% This program uses mldivide to solve the linear system.
+
 % statistics - camera 1
 R(:,:,1) = [ 9.6428667991264605e-1 -2.6484969138677328e-1 -2.4165916859785336e-3;
       -8.9795446022112396e-2 -3.1832382771611223e-1 -9.4371961862719200e-1;
@@ -60,7 +63,7 @@ for i = 1 : clips_num
     fname_length = length(fname); % get the length of the name of the last video file
     % take the name of the video, except the '.csv' part, as the name of
     % the trajectory picture file
-    figname = strcat(folder_name,'/trajectory_scene_',extractBefore(fname,fname_length-4),'.jpg');
+    figname = strcat(folder_name,'/trajectory_scene_undistorted_',extractBefore(fname,fname_length-4),'.jpg');
    
     % initialize vector to store the trajectory
     output = zeros(m,4);
