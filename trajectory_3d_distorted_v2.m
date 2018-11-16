@@ -1,3 +1,6 @@
+% Construct trajectory of table tennis ball from DISTORTED tracking data
+% This program uses svd to solve the linear system.
+
 % statistics - camera 1
 R(:,:,1) = [ 9.6428667991264605e-1 -2.6484969138677328e-1 -2.4165916859785336e-3;
       -8.9795446022112396e-2 -3.1832382771611223e-1 -9.4371961862719200e-1;
@@ -113,8 +116,17 @@ for i = 1 : clips_num
     Y = output(1:valid_frame_count,3);
     Z = output(1:valid_frame_count,4);
     
+    windowSize = 6;
+    smoothX = zeros(valid_frame_count - windowSize,1);
+    smoothY = zeros(valid_frame_count - windowSize,1);
+    smoothZ = zeros(valid_frame_count - windowSize,1);
+    for valid_frame = windowSize + 1 : valid_frame_count
+        smoothX(valid_frame - windowSize,1) = mean(X(valid_frame - windowSize : valid_frame,1));
+        smoothY(valid_frame - windowSize,1) = mean(Y(valid_frame - windowSize : valid_frame,1));
+        smoothZ(valid_frame - windowSize,1) = mean(Z(valid_frame - windowSize : valid_frame,1));
+    end
     figure
-    scatter3(X,Y,Z,'filled');
+    plot3(smoothX,smoothY,smoothZ,'o-')
     
     %csvwrite(output_fname,output);
 end
